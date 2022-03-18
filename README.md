@@ -1,4 +1,6 @@
-# Connect Four (Ruby)
+# <https://www.theodinproject.com>
+
+## Connect Four (Ruby)
 
 ## Purpose of Project
 
