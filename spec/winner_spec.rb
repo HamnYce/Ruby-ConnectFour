@@ -5,10 +5,8 @@ BLACK_CHECKER = 'o'
 MAX_BOARD_ROW = 8
 MAX_BOARD_COL = 8
 
-
 require_relative '../lib/winner'
-#TODO : test all rows of program for each test
-# or do first row, last row and middle row
+
 RSpec.describe 'Winner' do
   describe '::horizontal?' do
     context 'when board is empty' do
@@ -16,11 +14,41 @@ RSpec.describe 'Winner' do
 
       it 'returns false' do
         position = [1, 2]
-        expect(Winner).to_not be_horizontal(empty_board, position, 'x')
+        expect(Winner).to_not be_horizontal(empty_board, position, WHITE_CHECKER)
       end
     end
 
-    context 'when bottom row has 4 white checker in a row' do
+    context 'when 4 consecutive white checkers in any column and row' do
+      let(:win_board_variant) { Array.new(8) { Array.new(8, nil) } }
+
+      context 'when sign is white checker' do
+        it 'returns true' do
+          (0..7).each do |row|
+            (0..4).each do |col|
+              4.times.each do |offset|
+                win_board_variant[row][col + offset] = WHITE_CHECKER
+              end
+              expect(Winner).to be_horizontal(win_board_variant, [row, col], WHITE_CHECKER)
+            end
+            win_board_variant = Array.new(8) { Array.new(8, nil) }
+          end
+        end
+      end
+
+      context 'when sign is not white checker' do
+        it 'returns false' do
+          (0..7).each do |row|
+            (0..4).each do |col|
+              4.times.each do |offset|
+                win_board_variant[row][col + offset] = WHITE_CHECKER
+              end
+              expect(Winner).to_not be_horizontal(win_board_variant, [row, col], BLACK_CHECKER)
+            end
+            win_board_variant = Array.new(8) { Array.new(8, nil) }
+          end
+        end
+      end
+
       let(:winner_board) { Array.new(8) { Array.new(8, nil) } }
 
       it 'returns true' do
@@ -57,5 +85,8 @@ RSpec.describe 'Winner' do
         end
       end
     end
+  end
+
+  describe '::vertical?' do
   end
 end
