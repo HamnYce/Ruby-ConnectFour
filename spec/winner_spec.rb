@@ -18,75 +18,115 @@ RSpec.describe 'Winner' do
       end
     end
 
-    context 'when 4 consecutive white checkers in any column and row' do
-      let(:win_board_variant) { Array.new(8) { Array.new(8, nil) } }
+    context 'when 4 consecutive white checkers in any row' do
+      let(:win_board_row) { Array.new(8) { Array.new(8, nil) } }
 
       context 'when sign is white checker' do
         it 'returns true' do
           (0..7).each do |row|
+            win_board_row = Array.new(8) { Array.new(8, nil) }
             (0..4).each do |col|
               4.times.each do |offset|
-                win_board_variant[row][col + offset] = WHITE_CHECKER
+                win_board_row[row][col + offset] = WHITE_CHECKER
               end
-              expect(Winner).to be_horizontal(win_board_variant, [row, col], WHITE_CHECKER)
+              expect(Winner).to be_horizontal(win_board_row, [row, col], WHITE_CHECKER)
             end
-            win_board_variant = Array.new(8) { Array.new(8, nil) }
           end
-        end
-      end
-
-      context 'when sign is not white checker' do
-        it 'returns false' do
-          (0..7).each do |row|
-            (0..4).each do |col|
-              4.times.each do |offset|
-                win_board_variant[row][col + offset] = WHITE_CHECKER
-              end
-              expect(Winner).to_not be_horizontal(win_board_variant, [row, col], BLACK_CHECKER)
-            end
-            win_board_variant = Array.new(8) { Array.new(8, nil) }
-          end
-        end
-      end
-
-      let(:winner_board) { Array.new(8) { Array.new(8, nil) } }
-
-      it 'returns true' do
-        (0..3).each { |i| winner_board[7][i] = WHITE_CHECKER }
-        position = [7, 0]
-        expect(Winner).to be_horizontal(winner_board, position, WHITE_CHECKER)
-      end
-
-      context 'then black' do
-        it 'returns true' do
-          (0..3).each { |i| winner_board[7][i] = WHITE_CHECKER }
-          (4..7).each { |i| winner_board[7][i] = BLACK_CHECKER }
-          position = [7, 0]
-          expect(Winner).to be_horizontal(winner_board, position, WHITE_CHECKER)
         end
       end
     end
 
-    context 'when first row has 3 white checker in a row' do
-      let(:stale_board) { Array.new(8) { Array.new(8, nil) } }
+    context 'when checking sign is not same as position sign' do
+      let(:white_checker_board) { Array.new(8) { Array.new(8, WHITE_CHECKER)}}
 
-      it 'return false' do
-        (0..2).each { |i| stale_board[7][i] = WHITE_CHECKER }
-        position = [7, 0]
-        expect(Winner).to_not be_horizontal(stale_board, position, WHITE_CHECKER)
-      end
-
-      context 'then black' do
-        it 'return false' do
-          (0..2).each { |i| stale_board[7][i] = WHITE_CHECKER }
-          stale_board[7][3] = BLACK_CHECKER
-          position = [7, 0]
-          expect(Winner).to_not be_horizontal(stale_board, position, WHITE_CHECKER)
-        end
+      it 'returns false' do
+        pos = [1, 2]
+        expect(Winner).to_not be_horizontal(white_checker_board, pos, BLACK_CHECKER)
       end
     end
   end
 
   describe '::vertical?' do
+    context 'when 4 consecutive white checkers in any column' do
+      let(:win_board_col) { Array.new(8) { Array.new(8, nil) } }
+
+      context 'when sign is white checker' do
+        it 'returns true' do
+          (0..7).each do |col|
+            win_board_col = Array.new(8) { Array.new(8, nil) }
+            (0..4).each do |row|
+              4.times.each do |offset|
+                win_board_col[row + offset][col] = WHITE_CHECKER
+              end
+              expect(Winner).to be_vertical(win_board_col, [row, col], WHITE_CHECKER)
+            end
+          end
+        end
+      end
+    end
+
+    context 'when checking sign is not same as position sign' do
+      let(:bad_sign) { Array.new(8) { Array.new(8, WHITE_CHECKER) } }
+
+      it 'returns false' do
+        pos = [1, 2]
+        expect(Winner).to_not be_vertical(bad_sign, pos, BLACK_CHECKER)
+      end
+    end
+  end
+
+  describe '::leading_diagonal?' do
+    context 'when 4 consecutive white checkers' do
+      let(:win_board_lead_diag) { Array.new(8) { Array.new(8, nil) } }
+
+      context 'when leading diagonal' do
+        it 'returns true' do
+          (0..4).each do |row|
+            win_board_lead_diag = Array.new(8) { Array.new(8, nil) }
+            (0..4).each do |col|
+              4.times do |offset|
+                win_board_lead_diag[row + offset][col + offset] = WHITE_CHECKER
+              end
+              expect(Winner).to be_leading_diagonal(win_board_lead_diag, [row, col], WHITE_CHECKER)
+            end
+          end
+        end
+      end
+    end
+
+    context 'when checking sign is not same as position sign' do
+      let(:bad_sign) { Array.new(8) { Array.new(8, WHITE_CHECKER) } }
+
+      it 'returns false' do
+        pos = [0, 0]
+        expect(Winner).to_not be_leading_diagonal(bad_sign, pos, BLACK_CHECKER)
+      end
+    end
+  end
+
+  describe '::non_leading_diagonal?' do
+    context 'when non-leading diagonal' do
+      let(:win_board_non_lead_diag) { Array.new(8) { Array.new(8, nil) } }
+
+      it 'returns true' do
+        (0..4).each do |row|
+          (3..7).each do |col|
+            4.times do |offset|
+              win_board_non_lead_diag[row + offset][col - offset] = WHITE_CHECKER
+            end
+            expect(Winner).to be_non_leading_diagonal(win_board_non_lead_diag, [row, col], WHITE_CHECKER)
+          end
+        end
+      end
+    end
+
+    context 'when checking sign is not same as position sign' do
+      let(:bad_sign) { Array.new(8) { Array.new(8, WHITE_CHECKER) } }
+
+      it 'returns false' do
+        pos = [1, 2]
+        expect(Winner).to_not be_non_leading_diagonal(bad_sign, pos, BLACK_CHECKER)
+      end
+    end
   end
 end
