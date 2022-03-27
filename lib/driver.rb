@@ -20,7 +20,7 @@ class Driver
     puts @board
     start
   end
-  
+
   def start
     game_loop
   end
@@ -44,7 +44,7 @@ class Driver
 
   def game_turn
     while @pos == [-1, -1]
-      print 'enter the column to place checker: '
+      print "#{@turn.odd? ? @player_one : @player_two} enter the column to place checker (#{@checker}): "
       col = gets.chomp.to_i
       @pos = @board.place_checker(col, @checker)
     end
