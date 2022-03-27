@@ -17,6 +17,11 @@ class Driver
     player_names
     @current_player = @player_one
     @checker = WHITE_CHECKER
+    puts @board
+    start
+  end
+  
+  def start
     game_loop
   end
 
