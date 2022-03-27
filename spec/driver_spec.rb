@@ -5,7 +5,9 @@ require_relative '../lib/driver'
 RSpec.describe 'Driver' do
   before do
     allow_any_instance_of(Driver).to receive(:player_names)
-    allow_any_instance_of(Driver).to receive(:game_loop)
+    allow_any_instance_of(Driver).to receive(:puts)
+    allow_any_instance_of(Driver).to receive(:print)
+    allow_any_instance_of(Driver).to receive(:start)
   end
 
   subject(:driver) { Driver.new }
