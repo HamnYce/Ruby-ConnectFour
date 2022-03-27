@@ -3,8 +3,8 @@
 require_relative 'board'
 require_relative 'winner'
 
-WHITE_CHECKER = "x" # \u26AA (white checker)
-BLACK_CHECKER = "o" # \u26AB (black checker)
+WHITE_CHECKER = 'x' # \u26AA (white checker)
+BLACK_CHECKER = 'o' # \u26AB (black checker)
 
 # mixes the board with the text statements from Text module
 class Driver
